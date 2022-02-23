@@ -9,7 +9,7 @@ var palyer, playerBase, playerArcher;
 var arrow;
 var baseimage;
 var playerimage;
-var playerArrows = [];
+var arrows = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
@@ -57,14 +57,15 @@ function draw() {
   Engine.update(engine);
 
   playerArcher.display();
-  //arrow.display();
+  arrow.display();
+
+   //showArrows();
+  for (var i=0; i < arrows.length; i++){
+    arrows[i];
+  }
 
   if (keyCode === 32) {
     arrow.shoot(playerArcher.body.angle);
-  }
-
-  for(var i = 0; i < playerArrows.length; i++){
-    playerArrows[i].display();
   }
 
   // Title
@@ -75,22 +76,48 @@ function draw() {
 }
 
 function keyPressed(){
-if(keyCode === 32) {
-  var posX = playerArcher.body.position.x;
-  var posY = playerArcher.body.position.y;
-  var angle = playerArcher.body.angle;
-  var arrow = new PlayerArrow(posX, posY, 100,10, angle);
-  
-  Matter.Body.setAngle(arrow.body, angle);
-  playerArrow.push(arrow);
- }
+  if(keyCode === 32) {
+    var posX = playerArcher.body.position.x
+    var posY = playerArcher.body.position.y
+    var angle  = playerArcher.body.angle
+    var arrow = new PlayerArrow(posX,posY,100,10,angle);
+
+    Matter.Body.setAngle(arrow.body,angle);
+    arrows.push(arrow);
+  }
 }
 
 function keyReleased(){
   if(keyCode === 32){
-    if(playerArrows.length) {
+    if(arrows.length){
       var angle = playerArcher.body.angle;
-      playerArrows[playerArrows.length - 1].shoot(angle);
+      arrows[arrows.length - 1].shoot(angle);
+    }
   }
 }
+
+function showArrows(){
+  if(arrows.length > 0) {
+    if(
+      arrows[arrows.length - 1] === undefined ||
+      arrows[arrows.length - 1].body.position.x < width - 300
+    ) {
+      var positions = [-40,-60,-70,-20];
+      var position = random(positions)
+      var arrows = new Arrow(width,height - 100,170,170,position);
+      arrows.push(arrow);
+    }
+    for(var i = 0; i < arrows.length; i++) {
+      if (arrows[i]) {
+        Matter.Body.setVelocity(arrows[i].body, {
+          x: -0.9,
+          y: 0
+        });
+        boats[i].display();
+      }
+    }
+    } else {
+      var boat = new Boat(width,height-60,170,170,-60);
+      boats.push(boat);
+    }
 }
